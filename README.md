@@ -107,28 +107,6 @@ The qualitative comparison illustrates the segmentation performance of MAPD-Net 
 └── requirements.txt        # Environment dependencies
 ```
 
----
-
-## Notation-to-Code Mapping
-
-This section maps the main symbols in our paper (Methods / symbol table) to the variables and modules in this core implementation.
-
-**Modality index convention (used in code):** 0 = T1, 1 = T1ce, 2 = T2, 3 = FLAIR.
-
-- `X_m` (input of modality m): input tensor `x` in `train.py` with shape `[B, 4, D, H, W]`; modality slice is `x[:, i:i+1]`.
-- `F_m^base` (shared backbone features): `df[i]` returned by the shared UNet backbone.
-- `F_m^a` (anatomical features): in this implementation, `df[i]` also serves as the anatomical feature used for prototype computation.
-- `F_bar^a` (anatomy prototype): `df_full = mean(df)` in `modeling/ensemble/ensemble.py`.
-- `F_m^p` (pathology features from HPE): `p_i = HPE(df[i], modality=i)` in `modeling/HPE.py`.
-- `w_m` (pathology modulation parameters): `w_i = SemanticFingerprint(p_i)` (shape `[B, 2*C]`, scale+bias).
-- `s_m, b_m` (scale/bias split): `scale, bias = torch.chunk(w_i, 2, dim=1)` and reshape to `[B, C, 1, 1, 1]`.
-- `F_m^{a|p}` (FiLM-injected anatomy, training path): `z = df_full.detach() * scale + bias` before the modality discriminator.
-- `M_m` (spatial routing mask): `mask = spatial_gate(concat(f_shared, f_pw))` in `FingerprintGuidedFusion`.
-- `F_m^e` (enhanced feature after PCFM): `f_shared + mask * f_pw` (per modality), then averaged across available modalities.
-- `Y_hat` (segmentation logits): eval returns `final_pred` from `Ensemble.forward`; training may also produce `extra['fused_pred']`.
-
----
-
 ## Method Components
 
 ### Heterogeneous Pathology Encoder
