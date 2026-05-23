@@ -156,7 +156,7 @@ Install the dependencies as follows:
 
 ```bash
 # Clone the repository
-git clone https://github.com/YourUsername/MAPD-Net.git
+git clone [https://github.com/YourUsername/MAPD-Net.git](https://github.com/Xiurr/MAPD-Net.git)  
 cd MAPD-Net
 
 # Install dependencies
