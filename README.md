@@ -29,7 +29,7 @@ MAPD-Net consists of three synergistic components:
 
 ## Code Availability & Release Plan
 
-This repository currently provides the **review-stage core implementation** of MAPD-Net for academic evaluation. The released version focuses on the proposed architecture and the key anatomy-pathology disentanglement design, including:
+The released version focuses on the proposed architecture and the key anatomy-pathology disentanglement design, including:
 
 - The proposed MAPD-Net architecture and core model components (`modeling/`)
 - The implementation of the key modules: **HPE**, **APDM**, and **PCFM**
@@ -37,13 +37,7 @@ This repository currently provides the **review-stage core implementation** of M
 - Basic quantitative metrics and evaluation utilities (`utils/metrics.py`)
 - A lightweight forward verification example with random inputs
 
-At the submission stage, this repository is intended to help readers and reviewers inspect the technical design and verify the core forward logic of MAPD-Net.
-
-The quantitative and qualitative results reported below are from the submitted manuscript. The current repository release is intended for architecture inspection and forward-logic verification only; it does not yet reproduce the full training and evaluation pipeline.
-
-Complete training configurations, BraTS preprocessing scripts, full dataloader implementation, evaluation pipelines, ablation scripts, and pretrained checkpoints will be released upon paper acceptance.
-
-Due to BraTS data license restrictions, raw datasets are not included.
+Complete training configurations, BraTS preprocessing scripts, full dataloader implementation and evaluation pipelines will be released upon paper acceptance.
 
 ---
 
@@ -213,8 +207,6 @@ Subject_ID/
 └── *_seg.nii.gz
 ```
 
-**Submission-stage note:** This core release focuses on the proposed architecture and does not include the full dataset preprocessing, dataloader, or evaluation pipeline. These components will be released upon paper acceptance.
-
 ---
 
 ## Forward Verification Core Release
@@ -256,22 +248,6 @@ python train.py --patch 48
 
 Full training configurations and reproducible training/evaluation scripts will be released after paper acceptance.
 
----
-
-## Reproducibility Note
-
-This review-stage release does not include full training, preprocessing, dataloading, evaluation, ablation, or checkpoint files. Therefore, the current codebase is not intended to reproduce the reported BraTS results directly.
-
-It is intended to verify:
-
-- The implementation of the MAPD-Net architecture
-- The forward logic of the proposed modules
-- The basic behavior of HPE, APDM, and PCFM
-- The implementation of the core disentanglement losses
-
-Full reproducibility scripts will be released upon paper acceptance.
-
----
 
 ## Citation
 
