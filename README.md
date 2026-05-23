@@ -11,7 +11,7 @@
 
 **MAPD-Net** is a **Modality-aware Anatomy-Pathology Disentanglement Network** for incomplete multi-modality brain tumor segmentation. Multimodal MRI provides complementary anatomical and pathological information, but missing modalities frequently occur in clinical practice and challenge the stability and generalization of segmentation models.
 
-Existing methods mainly rely on modality synthesis, knowledge distillation, or shared representation learning. However, synthesis-based methods may introduce artifacts, distillation-based methods often require separate models for different missing-modality combinations, and shared representation learning may cause semantic entanglement between modality-invariant anatomy and modality-specific pathology.
+Existing methods typically rely on modality synthesis, knowledge distillation, or shared representation learning. However, synthesis-based methods may introduce artifacts, distillation-based methods often require separate models for different missing-modality combinations, and shared representation learning may cause semantic entanglement between modality-invariant anatomy and modality-specific pathology.
 
 MAPD-Net addresses this issue by explicitly separating **modality-shared anatomical representations** from **modality-exclusive pathological representations** at the representation level, avoiding pixel-level image reconstruction while preserving discriminative pathological cues.
 
@@ -38,7 +38,11 @@ This repository currently provides the **review-stage core implementation** of M
 - Basic quantitative metrics and evaluation utilities (`utils/metrics.py`)
 - A lightweight forward verification example with random inputs
 
-At the current submission stage, this repository is intended to allow readers and reviewers to inspect the technical design and verify the core model logic. Complete training configurations, BraTS preprocessing scripts, full dataloader implementation, evaluation pipelines, ablation scripts, and pretrained checkpoints will be released upon paper acceptance.
+At the submission stage, this repository is intended to help readers and reviewers inspect the technical design and verify the core forward logic of MAPD-Net.
+
+The quantitative and qualitative results reported below are from the submitted manuscript. The current repository release is intended for architecture inspection and forward-logic verification only; it does not yet reproduce the full training and evaluation pipeline.
+
+Complete training configurations, BraTS preprocessing scripts, full dataloader implementation, evaluation pipelines, ablation scripts, and pretrained checkpoints will be released upon paper acceptance.
 
 Due to BraTS data license restrictions, raw datasets are not included.
 
@@ -46,17 +50,20 @@ Due to BraTS data license restrictions, raw datasets are not included.
 
 ## Content
 
-- (1) [Experimental Results](#1-experimental-results)
-- (2) [Project Structure](#project-structure-core-implementation)
-- (3) [Notation-to-Code Mapping](#notation-to-code-mapping)
-- (4) [Method Components](#method-components)
-- (5) [Environment and Dataset Information](#2-environment-and-dataset-information)
-- (6) [Forward Verification](#3-forward-verification-core-release)
-- (7) [Citation](#citation)
+- [Experimental Results](#experimental-results)
+- [Project Structure](#project-structure-core-implementation)
+- [Method Components](#method-components)
+- [Environment and Dataset Information](#environment-and-dataset-information)
+- [Forward Verification](#forward-verification-core-release)
+- [Reproducibility Note](#reproducibility-note)
+- [Citation](#citation)
+- [Acknowledgement](#acknowledgement)
+- [License](#license)
+- [Contact](#contact)
 
 ---
 
-## 1 Experimental Results
+## Experimental Results
 
 To comprehensively evaluate the effectiveness and robustness of MAPD-Net for multimodal brain tumor segmentation, we conducted extensive experiments on the **BraTS 2018** and **BraTS 2020** datasets, especially under complex missing-modality scenarios. Following the incomplete multi-modality setting, experiments were performed across **15 possible modality combinations** constructed from four MRI modalities: T1, T1ce, T2, and FLAIR.
 
@@ -67,6 +74,15 @@ The segmentation performance is reported using the Dice coefficient on three cli
 - **ET**: Enhancing Tumor
 
 Experimental results demonstrate that MAPD-Net achieves superior segmentation performance compared with state-of-the-art methods in various missing-modality scenarios. The results validate the effectiveness of explicit modality-aware anatomy-pathology disentanglement and show the robustness of MAPD-Net when modalities are missing.
+
+### Overall Dice Performance
+
+| Dataset | WT | TC | ET | Avg. |
+|---|---:|---:|---:|---:|
+| BraTS 2018 | 87.4 | 80.5 | 64.4 | 77.4 |
+| BraTS 2020 | 89.0 | 82.5 | 65.2 | 78.9 |
+
+The full results over all 15 missing-modality combinations are reported in the submitted manuscript.
 
 ### BraTS 2018 Results
 
@@ -90,7 +106,7 @@ The qualitative comparison illustrates the segmentation performance of MAPD-Net 
 
 ---
 
-## Project Structure (Core Implementation)
+## Project Structure Core Implementation
 
 ```text
 .
@@ -107,16 +123,18 @@ The qualitative comparison illustrates the segmentation performance of MAPD-Net 
 └── requirements.txt        # Environment dependencies
 ```
 
+---
+
 ## Method Components
 
 ### Heterogeneous Pathology Encoder
 
 The Heterogeneous Pathology Encoder (HPE) employs four distinct, modality-tailored branches after a shared backbone network to extract modality-specific pathological features. Each branch is designed according to the imaging characteristics of the corresponding modality:
 
-- The **T1 branch** leverages the high sensitivity of T1 images to structural gradients and extracts high-frequency edge features.
-- The **T2 branch** models the complex heterogeneity within the tumor core through a multi-path structure.
-- The **FLAIR branch** captures anisotropic diffusion characteristics of edema using strip convolutions and dilated convolution.
-- The **T1ce branch** captures irregular deformations of enhancing regions using intensity gating and deformable convolution.
+- The **T1 branch** leverages the sensitivity of T1 images to structural gradients and extracts high-frequency edge features.
+- The **T1ce branch** captures irregular enhancing-region patterns using intensity gating and deformable convolution.
+- The **T2 branch** models heterogeneous tumor-core-related patterns through a multi-path structure.
+- The **FLAIR branch** is designed to model elongated and spatially diffuse edema-related patterns using strip convolutions and dilated convolution.
 
 Through these differentiated extraction strategies, HPE preserves modality-exclusive pathological fingerprints that are crucial for robust segmentation under incomplete multi-modality inputs.
 
@@ -128,6 +146,12 @@ The Anatomy-Pathology Disentanglement Module (APDM) is designed to achieve expli
 - The **Pathology Modulation Path** encourages modality-exclusive pathological features to retain modality-discriminative information and converts them into pathology modulation parameters.
 
 Together with the multi-component disentanglement loss, APDM constrains anatomical features to be modality-independent while preserving modality-specific pathological semantics.
+
+The disentanglement objective includes:
+
+- Anatomical consistency loss
+- Pathological uniqueness loss
+- Adversarial semantic constraint loss
 
 ### Pathology-Conditioned Fusion Module
 
@@ -142,9 +166,9 @@ This pathology-conditioned fusion process maximizes the diagnostic utility of mo
 
 ---
 
-## 2 Environment and Dataset Information
+## Environment and Dataset Information
 
-### 2.1 Environment
+### Environment
 
 The recommended environment is:
 
@@ -163,23 +187,24 @@ cd MAPD-Net
 pip install -r requirements.txt
 ```
 
-### 2.2 Dataset Information
+### Dataset Information
 
 The experiments in the paper were conducted on the BraTS 2018 and BraTS 2020 datasets. These datasets contain preoperative multimodal MRI scans from multiple institutions and cover glioma patients with significant morphological and histological heterogeneity.
 
 Each subject includes four MRI modalities:
 
-- T1-weighted (T1)
-- Contrast-enhanced T1 (T1ce)
-- T2-weighted (T2)
-- Fluid-Attenuated Inversion Recovery (FLAIR)
+- T1-weighted image: **T1**
+- Contrast-enhanced T1-weighted image: **T1ce**
+- T2-weighted image: **T2**
+- Fluid-Attenuated Inversion Recovery image: **FLAIR**
 
-Following the BraTS evaluation protocol, the original annotations are aggregated into three clinically significant regions: Enhancing Tumor (ET), Tumor Core (TC), and Whole Tumor (WT).
+Following the BraTS evaluation protocol, the original annotations are aggregated into three clinically significant regions:
 
-Raw BraTS datasets are not included in this repository due to dataset license restrictions. Please download the original datasets from the corresponding data sources:
+- Enhancing Tumor: **ET**
+- Tumor Core: **TC**
+- Whole Tumor: **WT**
 
-- [BraTS 2018](https://www.kaggle.com/datasets/anassbenfares/brats2018)
-- [BraTS 2020](https://www.synapse.org/#!Synapse:syn27046444/wiki/616571)
+Raw BraTS datasets are not included in this repository due to dataset license restrictions. Please obtain the datasets from the official BraTS challenge data portals and comply with the corresponding data-use agreements.
 
 The expected BraTS-style subject structure is:
 
@@ -196,7 +221,7 @@ Subject_ID/
 
 ---
 
-## 3 Forward Verification (Core Release)
+## Forward Verification Core Release
 
 This core release supports lightweight forward verification with random inputs. It is intended to verify the model logic rather than reproduce the full training and evaluation pipeline.
 
@@ -206,11 +231,26 @@ Run:
 python train.py
 ```
 
-To simulate missing modalities, pass indices in `{0,1,2,3}` corresponding to `{T1, T1ce, T2, FLAIR}`:
+### Missing-Modality Simulation
+
+The modality index convention used in this repository is:
+
+```text
+0: T1
+1: T1ce
+2: T2
+3: FLAIR
+```
+
+To simulate missing modalities, pass indices in `{0,1,2,3}`:
 
 ```bash
 python train.py --missing "1,3"
 ```
+
+The above example simulates the case where **T1ce** and **FLAIR** are missing.
+
+### Patch Size
 
 The default input patch size follows the paper setting of `80 × 80 × 80`. For a faster sanity check, a smaller patch size can be used if it is compatible with the network downsampling depth:
 
@@ -219,6 +259,21 @@ python train.py --patch 48
 ```
 
 Full training configurations and reproducible training/evaluation scripts will be released after paper acceptance.
+
+---
+
+## Reproducibility Note
+
+This review-stage release does not include full training, preprocessing, dataloading, evaluation, ablation, or checkpoint files. Therefore, the current codebase is not intended to reproduce the reported BraTS results directly.
+
+It is intended to verify:
+
+- The implementation of the MAPD-Net architecture
+- The forward logic of the proposed modules
+- The basic behavior of HPE, APDM, and PCFM
+- The implementation of the core disentanglement losses
+
+Full reproducibility scripts will be released upon paper acceptance.
 
 ---
 
@@ -234,3 +289,33 @@ If you find this repository useful for your research, please consider citing our
   year={2026}
 }
 ```
+
+---
+
+## Acknowledgement
+
+We sincerely thank the organizers of the BraTS challenges for providing publicly available benchmark datasets for brain tumor segmentation research.
+
+We also thank the developers of PyTorch and related open-source medical image analysis tools.
+
+---
+
+## License
+
+This repository is released for academic research purposes.
+
+Please note that the BraTS datasets are governed by their own data-use agreements and licenses. Users must obtain the datasets from the official data providers and comply with the corresponding terms.
+
+A formal license file will be added in the final public release.
+
+---
+
+## Contact
+
+For questions about the paper or code, please contact:
+
+- Ting Zhang: `zhangting@bjut.edu.cn`
+- Xiuhan Li: `lixiuhan@emails.bjut.edu.cn`
+- Zhaoying Liu: `zhaoying.liu@bjut.edu.cn`
+
+Corresponding author: **Zhaoying Liu**
