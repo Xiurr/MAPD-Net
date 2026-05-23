@@ -57,9 +57,6 @@ Due to BraTS data license restrictions, raw datasets are not included.
 - [Forward Verification](#forward-verification-core-release)
 - [Reproducibility Note](#reproducibility-note)
 - [Citation](#citation)
-- [Acknowledgement](#acknowledgement)
-- [License](#license)
-- [Contact](#contact)
 
 ---
 
@@ -288,34 +285,4 @@ If you find this repository useful for your research, please consider citing our
   journal={},
   year={2026}
 }
-```
 
----
-
-## Acknowledgement
-
-We sincerely thank the organizers of the BraTS challenges for providing publicly available benchmark datasets for brain tumor segmentation research.
-
-We also thank the developers of PyTorch and related open-source medical image analysis tools.
-
----
-
-## License
-
-This repository is released for academic research purposes.
-
-Please note that the BraTS datasets are governed by their own data-use agreements and licenses. Users must obtain the datasets from the official data providers and comply with the corresponding terms.
-
-A formal license file will be added in the final public release.
-
----
-
-## Contact
-
-For questions about the paper or code, please contact:
-
-- Ting Zhang: `zhangting@bjut.edu.cn`
-- Xiuhan Li: `lixiuhan@emails.bjut.edu.cn`
-- Zhaoying Liu: `zhaoying.liu@bjut.edu.cn`
-
-Corresponding author: **Zhaoying Liu**
