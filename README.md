@@ -1,7 +1,6 @@
 # MAPD-Net: Modality-Aware Anatomy-Pathology Disentanglement for Incomplete Multi-Modality Brain Tumor Segmentation
 
 <div align="center">
-<h2>MAPD-Net</h2>
 <p align="center">
     <img src="figures/fig2.png" width="1000" alt="MAPD-Net Architecture"/> <br />
 </p>
