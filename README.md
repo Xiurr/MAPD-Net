@@ -246,7 +246,8 @@ If you find this repository useful for your research, please consider citing our
 @article{zhang2026mapd,
   title={MAPD-Net: Modality-Aware Anatomy-Pathology Disentanglement for Incomplete Multi-Modality Brain Tumor Segmentation},
   author={Zhang, Ting and Li, Xiuhan and Liu, Zhaoying},
-  journal={},
-  year={2026}
+  journal={IEEE Transactions on Medical Imaging},
+  year={2026},
+  note={Under review}
 }
 
