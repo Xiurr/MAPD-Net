@@ -48,7 +48,6 @@ Complete training configurations, BraTS preprocessing scripts, full dataloader i
 - [Method Components](#method-components)
 - [Environment and Dataset Information](#environment-and-dataset-information)
 - [Forward Verification](#forward-verification-core-release)
-- [Reproducibility Note](#reproducibility-note)
 - [Citation](#citation)
 
 ---
