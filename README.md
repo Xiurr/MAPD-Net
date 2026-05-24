@@ -237,16 +237,6 @@ python train.py --missing "1,3"
 
 The above example simulates the case where **T1ce** and **FLAIR** are missing.
 
-### Patch Size
-
-The default input patch size follows the paper setting of `80 × 80 × 80`. For a faster sanity check, a smaller patch size can be used if it is compatible with the network downsampling depth:
-
-```bash
-python train.py --patch 48
-```
-
-Full training configurations and reproducible training/evaluation scripts will be released after paper acceptance.
-
 
 ## Citation
 
