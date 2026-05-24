@@ -2,7 +2,7 @@
 
 <div align="center">
 <p align="center">
-    <img src="figures/fig2.png" width="1000" alt="MAPD-Net Architecture"/> <br />
+    <img src="figures/fig2.png" width="800" alt="MAPD-Net Architecture"/> <br />
 </p>
 </div>
 
